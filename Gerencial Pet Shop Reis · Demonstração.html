@@ -1,0 +1,141 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gerencial Pet Shop Reis · Demonstração</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;
+--ink:#2e3c50;--bg:#eef3f5;--card:#fff;--line:#cfd8e0;--ac:#35cf71;--lk:#2e3c50;--acx:#2e3c50;--mut:#55657a;--bad:#a3262a;--hd:#2e3c50;--hdx:#fff;--in:#fff;--note:#fff6dc;--notex:#5a4100}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--ink:#e8eef5;--bg:#18212d;--card:#202c3b;--line:#34465c;--ac:#35cf71;--lk:#35cf71;--acx:#2e3c50;--mut:#a9b8cb;--bad:#ff8a8d;--hd:#131b25;--in:#18212d;--note:#3a3010;--notex:#f5dc9a}}
+:root[data-theme="dark"]{color-scheme:dark;--ink:#e8eef5;--bg:#18212d;--card:#202c3b;--line:#34465c;--ac:#35cf71;--lk:#35cf71;--acx:#2e3c50;--mut:#a9b8cb;--bad:#ff8a8d;--hd:#131b25;--in:#18212d;--note:#3a3010;--notex:#f5dc9a}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,sans-serif}
+header{background:var(--hd);color:var(--hdx);padding:.6rem 1rem;display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
+nav{display:flex;gap:.2rem;flex-wrap:wrap;flex:1}
+button,.b{font:inherit;border:1px solid var(--ac);background:var(--ac);color:var(--acx);border-radius:6px;padding:.4rem .8rem;cursor:pointer}
+nav button{background:transparent;border-color:transparent;color:#d5dde8}nav button[aria-current=page]{background:#35cf71;color:#2e3c50;font-weight:600}
+.sec{background:transparent;color:var(--lk)}.bad{background:var(--bad);border-color:var(--bad);color:#fff}.sm{padding:.1rem .5rem;font-size:.9rem}
+:focus-visible{outline:3px solid #f2b705;outline-offset:2px}
+main{max-width:1050px;margin:1rem auto;padding:0 1rem}h1{font-size:1.4rem;margin:.2rem 0 .8rem}h2{font-size:1.1rem;margin:.2rem 0 .5rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1rem;margin-bottom:1rem}
+.bar{display:flex;gap:.6rem;flex-wrap:wrap;align-items:end}
+label{display:flex;flex-direction:column;font-size:.9rem;color:var(--mut);gap:.15rem}
+input,select{font:inherit;padding:.4rem;border:1px solid var(--line);border-radius:6px;background:var(--in);color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.8rem;margin-bottom:1rem}
+.kpi{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--ac);border-radius:8px;padding:.8rem}.kpi.s{border-left-color:var(--bad)}.kpi.r{border-left-color:var(--ink)}
+.kpi b{display:block;font-size:1.45rem}.kpi small,.mut{color:var(--mut)}
+.wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.95rem}th,td{padding:.4rem .5rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.n{text-align:right!important;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tag{font-size:.8rem;border:1px solid var(--line);border-radius:99px;padding:0 .5rem;white-space:nowrap}
+.msg{padding:.6rem .8rem;border-radius:6px;margin:.5rem 0;background:var(--note);color:var(--notex)}.err{color:var(--bad);background:transparent;border:1px solid var(--bad)}
+.pb{display:inline-block;height:.6rem;background:var(--ac);border-radius:2px}.pb.s{background:var(--bad)}
+dialog{background:var(--card);color:var(--ink);border:1px solid var(--ink);border-radius:10px;max-width:620px;width:95%}
+dialog form{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}.full{grid-column:1/-1}pre{white-space:pre-wrap;background:var(--bg);padding:.6rem;border-radius:6px;font-size:.85rem;max-height:220px;overflow:auto}
+@page{margin:14mm}
+@media print{html:root:root:root{color-scheme:light;--ink:#000;--bg:#fff;--card:#fff;--line:#999;--mut:#333;padding:0}body{background:#fff!important;color:#000!important}header,.bar,.np,.msg,h1,dialog{display:none!important}main{max-width:none;margin:0;padding:0}.card{border:0;padding:0;margin:0}.mut{color:#333!important}table{font-size:10.5pt}thead{display:table-header-group}tfoot{display:table-row-group}tr{break-inside:avoid}}
+</style></head><body>
+<header><b>🐾 Pet Shop Reis · Gerencial</b><nav id="nav" aria-label="Principal"></nav><button class="sec sm" id="rs" style="color:#fff;border-color:#35cf71">Restaurar dados</button></header>
+<main><div class="msg" role="note">Versão de demonstração: os dados são fictícios e ficam salvos só neste navegador. Não há login nem perfis de acesso, e a análise usa regras locais, sem IA externa.</div><div id="m"></div></main><dialog id="dlg"></dialog>
+<script>
+const $=s=>document.querySelector(s),M=$('#m'),K='reis_demo_v1';
+const CATS=[[1,'Vendas de produtos','entrada'],[2,'Banho e tosa','entrada'],[3,'Serviços veterinários','entrada'],[4,'Fornecedores/mercadorias','saida'],[5,'Aluguel','saida'],[6,'Salários e encargos','saida'],[7,'Energia/água/internet','saida'],[8,'Marketing','saida'],[9,'Pró-labore/retiradas','saida']];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const brl=c=>(c/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const fd=d=>d?d.split('-').reverse().join('/'):'—';
+const hoje=new Date(Date.now()-3*36e5).toISOString().slice(0,10);
+const addD=(d,n)=>{const x=new Date(d+'T12:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)};
+const catN=id=>CATS.find(c=>c[0]==id);
+let S={movs:[],log:[],ia:[],nid:1},F={ini:hoje.slice(0,8)+'01',fim:hoje,base:'comp',visao:'empresa'},mem=null;
+function load(){try{const r=localStorage.getItem(K);if(r){S=JSON.parse(r);return}}catch(e){}seed()}
+function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+function log(a,id,antes,dep){S.log.unshift({em:new Date().toISOString(),a,id,antes,dep});save()}
+function add(tipo,desc,v,d,cat,nat,emp){const m={id:S.nid++,tipo,descricao:desc,valor:v,data_comp:d,data_pag:d<=hoje?d:null,categoria_id:cat,natureza:nat,status:'ativo',obs:''};
+ if(nat=='compartilhada'){m.pe=emp;m.ve=Math.round(v*emp/100);m.vp=v-m.ve;m.just='Uso misto loja/casa'}S.movs.push(m);return m}
+function seed(){S={movs:[],log:[],ia:[],nid:1};const y=+hoje.slice(0,4),mo=+hoje.slice(5,7),p=(a,b)=>`${a}-${String(b).padStart(2,'0')}`;
+ const pm=mo==1?[y-1,12]:[y,mo-1];
+ [[pm,1],[[y,mo],0]].forEach(([[yy,mm],cur])=>{const k=cur?.9:1,d=n=>p(yy,mm)+'-'+String(n).padStart(2,'0');const dd=n=>cur&&d(n)>hoje?hoje:d(n);
+  add('entrada','Vendas de balcão (semana 1)',Math.round(1850000*k),dd(7),1,'empresarial');add('entrada','Vendas de balcão (semana 2)',Math.round(1720000*k),dd(14),1,'empresarial');
+  add('entrada','Banho e tosa do mês',Math.round(1240000*k),dd(15),2,'empresarial');add('entrada','Consultas veterinárias',Math.round(680000*k),dd(10),3,'empresarial');
+  add('saida','Compra de ração e petiscos',Math.round(1900000*(cur?1.15:1)),dd(5),4,'empresarial');add('saida','Aluguel da loja',450000,dd(5),5,'empresarial');
+  add('saida','Salários da equipe',1320000,dd(5),6,'empresarial');add('saida','Internet e energia',Math.round(98000*(cur?1.3:1)),dd(8),7,'compartilhada',70);
+  add('saida','Anúncios em redes sociais',cur?90000:60000,dd(9),8,'empresarial');add('saida','Retirada do proprietário',500000,dd(10),9,'pessoal');add('saida','Mercado da casa',62000,dd(11),4,'pessoal')});
+ save()}
+const eff=(m,v)=>v=='pessoal'?(m.natureza=='pessoal'?m.valor:m.natureza=='compartilhada'?m.vp:0):(m.natureza=='empresarial'?m.valor:m.natureza=='compartilhada'?m.ve:0);
+const dt=(m,b)=>b=='pag'?m.data_pag:m.data_comp;
+function rows(ini,fim,cat=''){return S.movs.filter(m=>m.status=='ativo'&&dt(m,F.base)&&dt(m,F.base)>=ini&&dt(m,F.base)<=fim&&(!cat||m.categoria_id==cat)).map(m=>({...m,e:eff(m,F.visao)})).filter(m=>m.e>0)}
+const tot=r=>{const e=r.filter(x=>x.tipo=='entrada').reduce((a,x)=>a+x.e,0),s=r.filter(x=>x.tipo=='saida').reduce((a,x)=>a+x.e,0);return{e,s,r:e-s}};
+function prev(){const n=(new Date(F.fim)-new Date(F.ini))/864e5+1;return[addD(F.ini,-n),addD(F.ini,-1)]}
+const vr=(a,b)=>({abs:a-b,pct:b==0?null:((a-b)/Math.abs(b)*100)});
+const vt=v=>(v.abs<0?'−':'+')+brl(Math.abs(v.abs))+' ('+(v.pct==null?'não calculável':v.pct.toFixed(1).replace('.',',')+'%')+')';
+const sg=m=>(m.tipo=='entrada'?'▲ ':'▼ ')+brl(m.valor);
+const fbar=(x='')=>`<div class="card"><div class="bar"><label>De<input type="date" id="fi" value="${F.ini}"></label><label>Até<input type="date" id="ff" value="${F.fim}"></label>
+<label>Base de data<select id="fb"><option value="comp">Competência</option><option value="pag">Pagamento/recebimento</option></select></label>
+<label>Visão<select id="fv"><option value="empresa">Empresarial</option><option value="pessoal">Pessoal (separada)</option></select></label>${x}<button id="ap">Atualizar</button></div></div>`;
+function rd(){F.ini=$('#fi').value;F.fim=$('#ff').value;F.base=$('#fb').value;F.visao=$('#fv').value;if(!F.ini||!F.fim||F.ini>F.fim){alert('Confira as datas: a inicial não pode ser posterior à final.');return false}return true}
+function setf(){$('#fb').value=F.base;$('#fv').value=F.visao}
+const V={
+painel(){M.innerHTML='<h1>Painel gerencial</h1>'+fbar()+'<div id="o"></div>';setf();
+ const run=()=>{if(!rd())return;const r=rows(F.ini,F.fim),t=tot(r),[pi,pf]=prev(),a=tot(rows(pi,pf)),o=$('#o');
+  if(!r.length){o.innerHTML='<div class="card">Nenhuma movimentação neste filtro. Registre movimentações ou ajuste o período.</div>';return}
+  const g=(F.ini<F.fim&&(new Date(F.fim)-new Date(F.ini))/864e5>31)?7:10,sr={};r.forEach(x=>{const k=dt(x,F.base).slice(0,g);(sr[k]=sr[k]||{e:0,s:0})[x.tipo=='entrada'?'e':'s']+=x.e});
+  const mx=Math.max(1,...Object.values(sr).flatMap(x=>[x.e,x.s])),cs={};r.forEach(x=>{const k=x.categoria_id;cs[k]=(cs[k]||0)+x.e});
+  o.innerHTML=`<div class="kpis"><div class="kpi"><small>Total de entradas</small><b>▲ ${brl(t.e)}</b><small>vs. anterior: ${vt(vr(t.e,a.e))}</small></div><div class="kpi s"><small>Total de saídas</small><b>▼ ${brl(t.s)}</b><small>vs. anterior: ${vt(vr(t.s,a.s))}</small></div>
+  <div class="kpi r"><small>Resultado gerencial (entradas − saídas)</small><b>${t.r<0?'− ':''}${brl(Math.abs(t.r))}</b><small>${t.r<0?'Negativo':'Positivo ou zero'} · ${vt(vr(t.r,a.r))}</small></div></div>
+  <p class="mut">Resultado gerencial não é lucro contábil. ${F.visao=='pessoal'?'Visão pessoal.':'Lançamentos pessoais excluídos.'} ${fd(F.ini)} a ${fd(F.fim)} (anterior: ${fd(pi)} a ${fd(pf)}).</p>
+  <div class="card wrap"><h2>Evolução</h2><table><thead><tr><th>Período</th><th class="n">Entradas</th><th class="n">Saídas</th><th class="n">Resultado</th><th>Comparativo</th></tr></thead><tbody>${Object.keys(sr).sort().map(k=>{const x=sr[k],d=x.e-x.s;return `<tr><td>${fd(k.length==7?k+'-01':k).slice(k.length==7?3:0)}</td><td class="n">${brl(x.e)}</td><td class="n">${brl(x.s)}</td><td class="n">${d<0?'− ':''}${brl(Math.abs(d))}</td><td><span class="pb" style="width:${x.e/mx*90}px"></span><br><span class="pb s" style="width:${x.s/mx*90}px"></span></td></tr>`}).join('')}</tbody></table></div>
+  <div class="card wrap"><h2>Por categoria</h2><table><thead><tr><th>Categoria</th><th>Tipo</th><th class="n">Total</th></tr></thead><tbody>${Object.entries(cs).sort((x,y)=>y[1]-x[1]).map(([id,v])=>`<tr><td>${esc(catN(id)[1])}</td><td>${catN(id)[2]=='entrada'?'▲ Entrada':'▼ Saída'}</td><td class="n">${brl(v)}</td></tr>`).join('')}</tbody></table></div>`};
+ $('#ap').onclick=run;run()},
+movs(){M.innerHTML='<h1>Movimentações</h1>'+fbar('<label>Texto<input id="fx"></label><label>Status<select id="fs"><option value="ativo">Ativas</option><option value="cancelado">Canceladas</option></select></label><button class="sec" id="nv">+ Nova movimentação</button>')+'<div id="o"></div>';setf();
+ const run=()=>{if(!rd())return;const x=$('#fx').value.toLowerCase(),st=$('#fs').value;
+  const l=S.movs.filter(m=>m.status==st&&dt(m,F.base)>=F.ini&&dt(m,F.base)<=F.fim&&m.descricao.toLowerCase().includes(x)).sort((a,b)=>dt(b,F.base)<dt(a,F.base)?-1:1);
+  $('#o').innerHTML=l.length?`<div class="card wrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Natureza</th><th class="n">Valor</th><th></th></tr></thead><tbody>${l.map(m=>`<tr><td>${fd(dt(m,F.base))}</td><td>${esc(m.descricao)}${m.motivo?`<br><small class="mut">Cancelada: ${esc(m.motivo)}</small>`:''}</td><td>${esc(catN(m.categoria_id)[1])}</td><td><span class="tag">${m.natureza}${m.pe!=null?' '+m.pe+'% emp.':''}</span></td><td class="n">${sg(m)}</td><td class="n">${m.status=='ativo'?`<button class="sm sec" data-e="${m.id}">Editar</button> <button class="sm bad" data-x="${m.id}">Cancelar</button>`:''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="card">Nenhuma movimentação encontrada com estes filtros.</div>';
+  document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>form(S.movs.find(m=>m.id==b.dataset.e),run));
+  document.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{const mo=prompt('Motivo do cancelamento (o histórico é preservado):');if(!mo||mo.trim().length<3)return;const m=S.movs.find(y=>y.id==b.dataset.x);m.status='cancelado';m.motivo=mo.trim();log('cancelar',m.id,{status:'ativo'},{status:'cancelado',motivo:m.motivo});run()})};
+ $('#ap').onclick=run;$('#nv').onclick=()=>form(null,run);run()},
+rel(){M.innerHTML='<h1>Relatório gerencial</h1>'+fbar()+'<div id="o"></div>';setf();
+ const run=()=>{if(!rd())return;const r=rows(F.ini,F.fim).sort((a,b)=>dt(a,F.base)<dt(b,F.base)?-1:1),t=tot(r);
+  $('#o').innerHTML=`<div class="card wrap"><h2>Relatório gerencial · Pet Shop Reis</h2><p class="mut">Período ${fd(F.ini)} a ${fd(F.fim)} · base: ${F.base=='pag'?'pagamento':'competência'} · visão ${F.visao} · emitido em ${new Date().toLocaleString('pt-BR')} · documento gerencial, não contábil nem fiscal</p>
+  ${r.length?`<table><thead><tr><th>Data</th><th>Descrição</th><th>Tipo</th><th>Categoria</th><th>Natureza</th><th class="n">Valor considerado</th></tr></thead><tbody>${r.map(m=>`<tr><td>${fd(dt(m,F.base))}</td><td>${esc(m.descricao)}</td><td>${m.tipo=='entrada'?'▲ Entrada':'▼ Saída'}</td><td>${esc(catN(m.categoria_id)[1])}</td><td>${m.natureza}</td><td class="n">${brl(m.e)}</td></tr>`).join('')}</tbody><tfoot><tr><th colspan="5">Entradas ${brl(t.e)} · Saídas ${brl(t.s)} · Resultado gerencial</th><th class="n">${t.r<0?'− ':''}${brl(Math.abs(t.r))}</th></tr></tfoot></table>`:'<p>Nenhum registro encontrado para os filtros acima.</p>'}
+  <p class="np"><button class="sec" onclick="print()">Imprimir / salvar PDF</button> <small class="mut">Se a janela de impressão não abrir, use Ctrl+P (⌘P no Mac) e escolha “Salvar como PDF” no destino.</small></p></div>`};
+ $('#ap').onclick=run;run()},
+ia(){M.innerHTML='<h1>Análise inteligente</h1>'+fbar().replace('<button id="ap">Atualizar</button>','<button id="ap">Gerar resumo e explicar variações</button>')+'<p class="mut">Os números são calculados pelo sistema. Nesta demonstração o texto é montado por regras locais; na versão completa um modelo de IA redige a partir dos mesmos números.</p><div id="o"></div>';setf();
+ const hist=()=>{$('#o').innerHTML=S.ia.map((a,i)=>`<div class="card"><b>${fd(a.ini)} a ${fd(a.fim)}</b> <span class="tag">Revisão: ${esc({pendente:'pendente',util:'marcada como útil',incorreta:'marcada como incorreta',descartada:'descartada'}[a.rev]||a.rev)}</span><p>${esc(a.txt)}</p><div class="msg">Sugestão gerada em ${new Date(a.em).toLocaleString('pt-BR')}; requer revisão humana. Não é orientação contábil, fiscal ou financeira.</div><div class="np">${[['util','Útil'],['incorreta','Incorreta'],['descartada','Descartar']].map(x=>`<button class="sm sec" data-i="${i}" data-r="${x[0]}">${x[1]}</button>`).join(' ')}</div></div>`).join('')||'<div class="card">Nenhuma análise gerada ainda.</div>';
+  document.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const a=S.ia[b.dataset.i],ant=a.rev;a.rev=b.dataset.r;log('revisar_ia','IA #'+(S.ia.length-b.dataset.i),{revisao:ant},{revisao:a.rev});hist()})};
+ $('#ap').onclick=()=>{if(!rd())return;const r=rows(F.ini,F.fim),t=tot(r);let x;
+  if(!r.length)x='Não há dados suficientes para concluir; registre ou confira as movimentações do período.';
+  else{const[pi,pf]=prev(),pr=rows(pi,pf),a=tot(pr),v=vr(t.r,a.r),cs=(l)=>{const o={};l.filter(y=>y.tipo=='saida').forEach(y=>o[y.categoria_id]=(o[y.categoria_id]||0)+y.e);return o},c1=cs(r),c0=cs(pr);
+   const d=Object.keys({...c1,...c0}).map(k=>[k,(c1[k]||0)-(c0[k]||0)]).sort((p,q)=>Math.abs(q[1])-Math.abs(p[1])).slice(0,2);
+   x=`Período ${fd(F.ini)} a ${fd(F.fim)}: entradas ${brl(t.e)}, saídas ${brl(t.s)} e resultado gerencial ${t.r<0?'−':''}${brl(Math.abs(t.r))}. Em relação a ${fd(pi)} a ${fd(pf)}, o resultado variou ${vt(v)}.`+(pr.length&&d.length?' Maiores mudanças nas saídas: '+d.map(([k,n])=>`${catN(k)[1]} (${n<0?'−':'+'}${brl(Math.abs(n))})`).join('; ')+'.':' Não há movimentações no período anterior para explicar variações.')}
+  S.ia.unshift({ini:F.ini,fim:F.fim,txt:x,rev:'pendente',em:new Date().toISOString()});log('ia_gerar','-',null,{periodo:[F.ini,F.fim]});hist()};hist()},
+aud(){M.innerHTML=`<h1>Auditoria</h1><div class="card wrap"><table><thead><tr><th>Quando</th><th>O que foi feito</th><th>Item</th><th>Antes</th><th>Depois</th></tr></thead><tbody>${S.log.slice(0,200).map(a=>`<tr><td>${new Date(a.em).toLocaleString('pt-BR')}</td><td>${esc(AL[a.a]||a.a)}</td><td>${itm(a)}</td><td>${dif(a,'antes')}</td><td>${dif(a,'dep')}</td></tr>`).join('')||'<tr><td colspan="5">Nenhuma ação registrada ainda. Os dados de exemplo não geram histórico: crie, edite ou cancele uma movimentação, ou gere uma análise, e volte aqui.</td></tr>'}</tbody></table></div>`}};
+const AL={criar:'Criou movimentação',editar:'Editou movimentação',cancelar:'Cancelou movimentação',ia_gerar:'Gerou análise de IA',revisar_ia:'Avaliou análise de IA'};
+const FL={tipo:'Tipo',descricao:'Descrição',valor:'Valor',data_comp:'Competência',data_pag:'Pagamento',categoria_id:'Categoria',natureza:'Natureza',pe:'% empresarial',ve:'Parte empresarial',vp:'Parte pessoal',just:'Justificativa',status:'Situação',motivo:'Motivo',revisao:'Avaliação',periodo:'Período'};
+function fv(k,v){if(v==null||v==='')return '—';if(['valor','ve','vp'].includes(k))return brl(v);if(['data_comp','data_pag'].includes(k))return fd(v);if(k=='categoria_id')return esc(catN(v)?catN(v)[1]:v);if(k=='tipo')return v=='entrada'?'▲ Entrada':'▼ Saída';if(k=='pe')return v+'%';if(Array.isArray(v))return v.map(fd).join(' a ');if(k=='status')return v=='ativo'?'Ativa':'Cancelada';if(k=='revisao')return({pendente:'Pendente',util:'Útil',incorreta:'Incorreta',descartada:'Descartada'})[v]||esc(v);return esc(v)}
+function dif(a,side){const src=a[side];if(!src||typeof src!=='object')return '—';let ks=a.antes?Object.keys(a.antes):Object.keys(a.dep||{}).filter(k=>!['id','status'].includes(k));if(a.a=='cancelar'&&side=='dep')ks=['status','motivo'];return ks.map(k=>`<div><small class="mut">${FL[k]||k}:</small> ${fv(k,src[k])}</div>`).join('')||'—'}
+function itm(a){const m=S.movs.find(x=>x.id==a.id);return m?`#${a.id} · ${esc(m.descricao)}`:esc(a.id)}
+function form(m,done){const d=$('#dlg'),e=m||{tipo:'saida',natureza:'empresarial',data_comp:hoje,pe:50};
+ d.innerHTML=`<form method="dialog" id="mf"><h2 class="full">${m?'Editar':'Nova'} movimentação</h2><label>Tipo<select id="t"><option value="saida">Saída</option><option value="entrada">Entrada</option></select></label>
+ <label>Valor (R$)<input id="v" inputmode="decimal" placeholder="120,50" value="${m?(m.valor/100).toFixed(2).replace('.',','):''}"></label><label class="full">Descrição<input id="d" maxlength="200" value="${esc(e.descricao||'')}"></label>
+ <label>Data de competência<input type="date" id="dc" value="${e.data_comp}"></label><label>Data de pagamento/recebimento<input type="date" id="dp" max="${hoje}" value="${e.data_pag||''}"></label>
+ <label>Categoria<select id="c"></select></label><label>Natureza<select id="n"><option value="empresarial">Empresarial</option><option value="pessoal">Pessoal</option><option value="compartilhada">Compartilhada (rateio)</option></select></label>
+ <p class="full mut">Despesas pessoais não entram nos indicadores empresariais por padrão.</p>
+ <div class="full bar" id="rt" hidden><label>% empresarial<input id="pe" inputmode="decimal" value="${e.pe??50}"></label><label>% pessoal<input id="pp" inputmode="decimal" value="${100-(e.pe??50)}"></label><label>Justificativa<input id="j" value="${esc(e.just||'')}"></label></div>
+ <div class="full" id="er"></div><div class="full bar"><button>Salvar</button><button type="button" class="sec" id="x">Fechar</button></div></form>`;
+ const cs=()=>{$('#c').innerHTML=CATS.filter(c=>c[2]==$('#t').value).map(c=>`<option value="${c[0]}">${esc(c[1])}</option>`).join('');if(m&&$('#t').value==m.tipo)$('#c').value=m.categoria_id};
+ $('#t').value=e.tipo;$('#n').value=e.natureza;cs();$('#t').onchange=cs;const sh=()=>$('#rt').hidden=$('#n').value!='compartilhada';sh();$('#n').onchange=sh;
+ const num=s=>parseFloat(String(s).replace(',','.'));$('#pe').oninput=()=>$('#pp').value=+(100-num($('#pe').value)).toFixed(2);$('#pp').oninput=()=>$('#pe').value=+(100-num($('#pp').value)).toFixed(2);$('#x').onclick=()=>d.close();
+ $('#mf').onsubmit=ev=>{ev.preventDefault();const er=t=>{$('#er').innerHTML=`<div class="msg err" role="alert">${esc(t)}</div>`};
+  const raw=$('#v').value.trim(),v=Math.round(num(raw.includes(',')?raw.replace(/\./g,''):raw)*100),ds=$('#d').value.replace(/\s+/g,' ').trim(),nat=$('#n').value;
+  if(!(v>0))return er('O valor deve ser um número maior que zero.');if(v>1e9)return er('Valor acima do limite permitido.');
+  if(ds.length<2||ds.length>200)return er('A descrição deve ter entre 2 e 200 caracteres.');if(!$('#dc').value)return er('Informe a data de competência.');
+  if($('#dp').value>hoje)return er('Data de pagamento efetivo não pode ser futura.');
+  const o={tipo:$('#t').value,descricao:ds,valor:v,data_comp:$('#dc').value,data_pag:$('#dp').value||null,categoria_id:+$('#c').value,natureza:nat};
+  if(nat=='compartilhada'){const pe=num($('#pe').value),pp=num($('#pp').value);if(!(pe>=0&&pe<=100&&pp>=0&&pp<=100))return er('Percentuais devem estar entre 0% e 100%.');if(Math.abs(pe+pp-100)>1e-9)return er(`Os percentuais somam ${+(pe+pp).toFixed(2)}%; devem totalizar 100%.`);
+   if($('#j').value.trim().length<3)return er('Informe a justificativa do rateio.');o.pe=pe;o.ve=Math.round(v*pe/100);o.vp=v-o.ve;o.just=$('#j').value.trim()}
+  if(!m&&S.movs.some(x=>x.status=='ativo'&&x.data_comp==o.data_comp&&x.valor==v&&x.tipo==o.tipo&&x.descricao.toLowerCase()==ds.toLowerCase())&&!confirm('Possível duplicidade: já existe movimentação igual nesta data. Manter mesmo assim?'))return;
+  if(m){const antes={};Object.keys(o).forEach(k=>{if(m[k]!==o[k])antes[k]=m[k]});['pe','ve','vp','just'].forEach(k=>delete m[k]);Object.assign(m,o);log('editar',m.id,antes,o)}else{o.id=S.nid++;o.status='ativo';S.movs.push(o);log('criar',o.id,null,o)}
+  save();d.close();done()};d.showModal()}
+$('#nav').innerHTML=[['painel','Painel'],['movs','Movimentações'],['rel','Relatórios'],['ia','Análise IA'],['aud','Auditoria']].map(t=>`<button data-v="${t[0]}">${t[1]}</button>`).join('');
+function go(v){document.querySelectorAll('#nav button').forEach(b=>b.dataset.v==v?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));V[v]()}
+$('#nav').onclick=e=>e.target.dataset.v&&go(e.target.dataset.v);
+$('#rs').onclick=()=>{if(confirm('Apagar os dados desta demonstração e restaurar os exemplos?')){seed();go('painel')}};
+load();go('painel');
+</script></body></html>
